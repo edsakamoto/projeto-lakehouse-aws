@@ -1,0 +1,14 @@
+#ambiente virtual
+venv/
+.venv/
+
+#cache python
+__pycachce__/
+*.pyc
+
+#arquivos de configurações locais
+.env
+
+#pasta com base de dados
+base_dados/
+.base_dados/
