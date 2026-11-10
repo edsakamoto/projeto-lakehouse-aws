@@ -90,9 +90,9 @@ df = df.drop(columns=['dataemissao_dt','datavencimento_dt'])
 #====================
 #tipagem de dados
 #====================
-df['qtditens'] = pd.to_numeric(df['qtditens'],erros='coerce')
-df['valorunitario'] = pd.to_numeric(df['valorunitatrio'],errors='coerce')
-df['peso_liquido'] = pd.to_numeric(df['peso_liquido'],erros='coerce')
+df['qtditens'] = pd.to_numeric(df['qtditens'],errors='coerce')
+df['valorunitario'] = pd.to_numeric(df['valorunitario'],errors='coerce')
+df['peso_liquido'] = pd.to_numeric(df['peso_liquido'],errors='coerce')
 
 df['nfe'] = df['nfe'].astype(str)
 df['cliente'] = df['cliente'].astype(str)
@@ -101,7 +101,7 @@ df['vendedor'] = df['vendedor'].astype(str)
 #===========
 #colunas tecnicas
 #===========
-df['data_ingestao'] = datetime.now().strftime('%Y-%m-%d %H:%M%S')
+df['data_ingestao'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
 #==========
 #particionamento (usando dataemissao_dt)
@@ -113,10 +113,10 @@ df['_dia'] = pd.to_datetime(df['dataemissao'],errors='coerce').dt.day
 #======
 # parquet + upload
 #====
-tmp_dir = tempfile
-for (ano,mes,dia), part in df.groupby(['_ano','_mes','dia']):
+tmp_dir = tempfile.mkdtemp()
+for (ano,mes,dia), part in df.groupby(['_ano','_mes','_dia']):
 
-    part = part.drop(columns=['_ano','_mes','dia'])
+    part = part.drop(columns=['_ano','_mes','_dia'])
 
     local_parquet = os.path.join(
         tmp_dir

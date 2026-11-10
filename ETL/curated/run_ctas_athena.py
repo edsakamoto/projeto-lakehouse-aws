@@ -9,7 +9,7 @@ AWS_PROFILE = 'pos-eng-dados'
 AWS_REGION  = 'us-east-1'
 
 ATHENA_DATABASE = 'lakehouse_curated'
-ATHENA_OUTUPUT = 's3://pos-graduacao-lakehouse-sked/athena-query-results/'
+ATHENA_OUTPUT = 's3://pos-graduacao-lakehouse-sked/athena-query-results/'
 
 CURATED_BUCKET = "pos-graduacao-lakehouse-sked"
 CURATED_BASE_PREFIX = 'curated' 
@@ -69,31 +69,31 @@ def executar_sql_unico(query:str, descricao:str):
             'Database': ATHENA_DATABASE
         }
         ,ResultConfiguration={
-            'OutputLocation':ATHENA_OUTUPUT
+            'OutputLocation':ATHENA_OUTPUT
         }
     )
 
-    execution_id = response('QueryExecutionId')
+    execution_id = response['QueryExecutionId']
     print(f'{descricao} | QueryExecutionId: {execution_id}')
 
     while True:
         status_response = athena.get_query_execution(
-            QueryExectionId=execution_id
+            QueryExecutionId=execution_id
         )
 
         status = status_response['QueryExecution']['Status']['State']
 
-        if status in ['SUCCEEDED','FAILED','CANCELLED']:
+        if status == 'SUCCEEDED':
             break
 
+        if status in ['FAILED','CANCELLED']:
+             reason = status_response['QueryExecution']['Status'].get(
+                 'StateChangeReason','Motivo não informado'
+             )
+             raise Exception(f'{descricao} falhou: {reason}')
+
         time.sleep(POOL_INTERNAL_SECONDS)
-
-        if status != 'SUCCEEDED':
-            reason = status_response['QueryExection']['Status'].get(
-                'StateChangeReason','Motivo não informado'
-            )
-            raise Exception(f'{descricao} falhou: {reason}')
-
+        
 #===========
 #funcao executar ctas
 #==========

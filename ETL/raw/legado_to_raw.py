@@ -24,7 +24,7 @@ def copiar_legado_para_raw(s3_client, bucket, file_name):
     timestamp = gerar_timestamp_execucao()
 
     origem_key = f'{LEGADO_PREFIX}/{file_name}'
-    destino_key = f'{RAW_PREFIX}/ingest_ts-{timestamp/file_name}'
+    destino_key = f'{RAW_PREFIX}/ingest_ts={timestamp}/{file_name}'
 
 
     print('[INFO] Iniciando copia legado para Raw')
