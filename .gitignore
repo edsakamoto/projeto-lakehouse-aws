@@ -12,3 +12,7 @@ __pycachce__/
 #pasta com base de dados
 base_dados/
 .base_dados/
+
+#pasta de log
+log/
+.log/
